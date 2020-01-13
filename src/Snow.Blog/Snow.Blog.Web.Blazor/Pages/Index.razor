@@ -1,0 +1,38 @@
+﻿@page "/"
+@page "/{page:int}"
+@page "/{categoryId:int}/{page:int}"
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div style="position: sticky;top: 70px;">
+                <Category />
+            </div>
+        </div>
+        <div class="col-8">
+            <!--正文列表内容-->
+            <div id="content">
+                <Bloggers Page="Page.Value"
+                          CategoryId="CategoryId" />
+            </div>
+            <!--分页-->
+            <div id="pagination"></div>
+        </div>
+        <div class="col">
+            <!--其它内容-->
+            <canvas id="canvas" style="width: 100%;"></canvas>
+            <div class='calendar' style="width: 100%;" id='calendar'></div>
+        </div>
+    </div>
+</div>
+@code{
+    [Parameter]
+    public int? Page { get; set; }
+    [Parameter]
+    public int? CategoryId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Page = Page.HasValue ? Page : 1;
+    }
+}

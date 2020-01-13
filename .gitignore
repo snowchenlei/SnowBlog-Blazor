@@ -3,3 +3,16 @@
 ################################################################################
 
 /src/Snow.Blog/.vs/Snow.Blog
+/src/Snow.Blog/packages/Newtonsoft.Json.12.0.3
+/src/Snow.Blog/Snow.Blog.IRepository/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.IRepository/obj
+/src/Snow.Blog/Snow.Blog.Model/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.Model/obj
+/src/Snow.Blog/Snow.Blog.Repository/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.Repository/obj
+/src/Snow.Blog/Snow.Blog.Service/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.Service/obj
+/src/Snow.Blog/Snow.Blog.SqlServer/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.SqlServer/obj
+/src/Snow.Blog/Snow.Blog.Web.Blazor/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.Web.Blazor/obj
