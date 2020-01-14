@@ -16,9 +16,9 @@ using Snow.Blog.IRepository.Bloggers;
 using Snow.Blog.Service.Bloggers;
 using Snow.Blog.Service.Categories;
 using Snow.Blog.SqlServer;
-using Snow.Blog.Web.Blazor.Data;
+using Snow.Blog.Web.Data;
 
-namespace Snow.Blog.Web.Blazor
+namespace Snow.Blog.Web
 {
     public class Startup
     {

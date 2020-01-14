@@ -1,5 +1,5 @@
 ﻿@page "/"
-@namespace Snow.Blog.Web.Blazor.Pages
+@namespace Snow.Blog.Web.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
@@ -13,6 +13,7 @@
     <title>Snow.Blog</title>
     <base href="~/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="~/css/font-awesome/css/all.css" rel="stylesheet" />
     <style type="text/css">
         #blazor-error-ui {
             background: lightyellow;
@@ -79,5 +80,6 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
 </body>
 </html>

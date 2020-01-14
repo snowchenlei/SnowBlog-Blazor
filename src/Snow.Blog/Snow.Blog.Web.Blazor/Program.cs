@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Snow.Blog.Web.Blazor
+namespace Snow.Blog.Web
 {
     public class Program
     {
