@@ -1,5 +1,4 @@
-﻿@*@page "/bloggers/{page:int}"*@
-@using Snow.Blog.Service.Dto;
+﻿@using Snow.Blog.Service.Dto;
 @using Snow.Blog.Service.Bloggers.Dto;
 @inject Snow.Blog.Service.Bloggers.IBloggerService BloggerService
 <div class="list-group">
@@ -8,13 +7,13 @@
         foreach (var item in bloggers.Items)
         {
             <div class="list-group-item">
+                <a href="/blogger/@item.Id" target="_blank">
+                    <h3 class="mb-4" title="@item.Title">@item.Title</h3>
+                </a>
                 <div class="d-flex w-100 justify-content-between">
-                    <a href="/blogger/@item.Id" target="_blank">
-                        <h3 class="mb-4" title="@item.Title">@item.Title</h3>
-                    </a>
-                    <small><i class="far fa-calendar-alt"></i>@item.LastModifyDate</small>
                 </div>
                 <p class="mb-1">@item.Description</p>
+                <small><i class="far fa-calendar-alt"></i>@item.LastModifyDate</small>
                 <small><i class="fas fa-tag"></i>@item.CategoryName</small>
             </div>
         }
@@ -24,21 +23,24 @@
     }
 </div>
 @code {
-    private PagedResultDto<BloggerListDto>
-    bloggers;
+    private PagedResultDto<BloggerListDto> bloggers;
 
     [Parameter]
     public int Page { get; set; } = 1;
     [Parameter]
     public int? CategoryId { get; set; }
+    [Parameter]
+    public string Keyword { get; set; }
 
     private int limit = 2;
     private int pageCount;
     private string pageUrl;
+    private bool isInit = false;
 
     protected override async Task OnInitializedAsync()
     {
         await ResetParemeterAsync();
+        isInit = true;
     }
     /// <summary>
     /// 父元素设置参数后的回调
@@ -49,15 +51,30 @@
         await ResetParemeterAsync();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Run(() =>
+            {
+                isInit = false;
+
+            });
+        }
+    }
+
     /// <summary>
     /// 重置参数
     /// </summary>
     /// <returns></returns>
     private async Task ResetParemeterAsync()
     {
-        pageUrl = CreatePageUrl();
-        bloggers = await GetBloggersAsync(Page);
-        pageCount = bloggers.PageCount;
+        if (!isInit)
+        {
+            pageUrl = CreatePageUrl();
+            bloggers = await GetBloggersAsync(Page);
+            pageCount = bloggers.PageCount;
+        }
     }
 
     /// <summary>
@@ -67,14 +84,16 @@
     private string CreatePageUrl()
     {
         string url = String.Empty;
+        if (!String.IsNullOrEmpty(Keyword))
+        {
+            url += "/search/" + Keyword;
+
+        }
         if (CategoryId.HasValue)
         {
-            url = $"/{CategoryId.Value}/#Page";
+            url += $"/{CategoryId.Value}";
         }
-        else
-        {
-            url = $"/#Page";
-        }
+        url += $"/#Page";
         return url;
     }
 
@@ -89,7 +108,8 @@
         {
             Page = page,
             CategoryId = CategoryId,
-            Limit = limit
+            Limit = limit,
+            Title = Keyword
         });
     }
 }

@@ -1,10 +1,7 @@
 ﻿@page "/"
 @page "/{page:int}"
 @page "/{categoryId:int}/{page:int}"
-@using Blazor.Extensions
-@using Blazor.Extensions.Canvas
-@using Blazor.Extensions.Canvas.WebGL
-@using Blazor.Extensions.Canvas.Canvas2D
+@using Blazor.Extensions.Canvas;
 <div class="container">
     <div class="row">
         <div class="col">
@@ -24,9 +21,9 @@
         <div class="col">
             <!--其它内容-->
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="请输入关键字" aria-label="请输入关键字" aria-describedby="button-addon2">
+                <input type="text" class="form-control" placeholder="请输入关键字" aria-label="请输入关键字" aria-describedby="button-addon2" @bind="Search">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">搜索</button>
+                    <a class="btn btn-outline-secondary" role="button" href="/search/@Search/1">搜索</a>
                 </div>
             </div>
             <BECanvas Width="200" Height="200" @ref="_canvasReference"></BECanvas>

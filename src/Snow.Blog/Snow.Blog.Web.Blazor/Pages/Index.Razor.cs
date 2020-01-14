@@ -20,6 +20,7 @@ namespace Snow.Blog.Web.Pages
 
         protected override void OnInitialized()
         {
+            // TODO:项目运行请求“/”2次
             Page = Page.HasValue ? Page : 1;
         }
 
@@ -45,6 +46,8 @@ namespace Snow.Blog.Web.Pages
             });
         }
 
+        private string Search;
+
         #region 画时钟
 
         #region 核心方法
@@ -61,8 +64,14 @@ namespace Snow.Blog.Web.Pages
             double radius = width / 2;
             DateTime now = DateTime.Now;
             await ClearAsync(radius);
-
+            // TODO:闪屏与卡死
             await DrawCicleAsync("red", radius, "#ebf0eb");
+            //await DrawHourLineAsync(radius);
+            //await DrawMinuteLineAsync(radius);
+            //await DrawHourNumberAsync(radius);
+            //await DrawHourHandAsync(now.Hour, radius);
+            //await DrawMinuteHandAsync(now.Minute, radius);
+            //await DrawSecondHandAsync(now.Second, radius);
 
             Task hourLine = DrawHourLineAsync(radius);
             Task minuteLine = DrawMinuteLineAsync(radius);
@@ -120,7 +129,7 @@ namespace Snow.Blog.Web.Pages
         private async Task DrawHourNumberAsync(double radius)
         {
             await _context.SaveAsync();
-            await _context.TranslateAsync(radius, radius);
+            //await _context.TranslateAsync(radius, radius);
             await _context.BeginPathAsync();
             await _context.SetFontAsync("18px Arial");
             await _context.SetFillStyleAsync("#000");
@@ -132,6 +141,7 @@ namespace Snow.Blog.Web.Pages
                 tasks.Add(DrawOneHourNumberAsync(i, radius));
             }
             await Task.WhenAll(tasks);
+            await _context.RestoreAsync();
         }
 
         /// <summary>
@@ -143,6 +153,7 @@ namespace Snow.Blog.Web.Pages
         private async Task DrawHourHandAsync(int hour, double radius)
         {
             await _context.SaveAsync();
+            await _context.TranslateAsync(radius, radius);
             double theta = (hour - 3) * 2 * Math.PI / 12;
             await _context.RotateAsync((float)theta);
             await _context.BeginPathAsync();
@@ -163,6 +174,8 @@ namespace Snow.Blog.Web.Pages
         private async Task DrawMinuteHandAsync(int minute, double radius)
         {
             await _context.SaveAsync();
+            await _context.TranslateAsync(radius, radius);
+
             double theta = (minute - 15) * 2 * Math.PI / 60;
             // 旋转角度
             await _context.RotateAsync((float)theta);
@@ -205,6 +218,7 @@ namespace Snow.Blog.Web.Pages
         private async Task DrawSecondHandAsync(int second, double radius)
         {
             await _context.SaveAsync();
+            await _context.TranslateAsync(radius, radius);
             double theta = (second - 15) * 2 * Math.PI / 60;
             // 旋转角度
             await _context.RotateAsync((float)theta);
@@ -225,7 +239,7 @@ namespace Snow.Blog.Web.Pages
 
         private async Task ClearAsync(double radius)
         {
-            await _context.MoveToAsync(0, 0);
+            //await _context.MoveToAsync(0, 0);
             await _context.ClearRectAsync(-radius, -radius, radius * 2, radius * 2);
         }
 
@@ -238,8 +252,8 @@ namespace Snow.Blog.Web.Pages
         private async Task DrawOneHourNumberAsync(int index, double radius)
         {
             var theta = (index - 3) * (Math.PI * 2) / 12;
-            var x = radius * 0.8 * Math.Cos(theta);
-            var y = radius * 0.8 * Math.Sin(theta);
+            var x = radius + radius * 0.8 * Math.Cos(theta);
+            var y = radius + radius * 0.8 * Math.Sin(theta);
             await _context.FillTextAsync(index.ToString(), x, y);
         }
 

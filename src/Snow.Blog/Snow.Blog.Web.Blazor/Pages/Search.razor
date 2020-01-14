@@ -1,0 +1,43 @@
+﻿@page "/search"
+@page "/search/{Keyword}/{page:int}"
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="请输入关键字" aria-label="请输入关键字" aria-describedby="button-addon2" @bind="Keyword">
+    <div class="input-group-append">
+        <a class="btn btn-outline-secondary" role="button" href="@CreateUrl()">搜索</a>
+        @*<button class="btn btn-outline-secondary" role="button">搜索</button>*@
+    </div>
+</div>
+@if (Page.HasValue && !String.IsNullOrEmpty(Keyword))
+{
+    <Bloggers Page="Page.Value"
+              Keyword="@Keyword" />
+}
+
+@code {
+    [Parameter]
+    public int? Page { get; set; }
+    [Parameter]
+    public string Keyword { get; set; }
+
+    private string url;
+    protected override void OnInitialized()
+    {
+    }
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
+    private string CreateUrl()
+    {
+        if (String.IsNullOrEmpty(Keyword))
+        {
+            url = "/search";
+
+        }
+        else
+        {
+            url = $"/search/{Keyword}/1";
+        }
+        return url;
+    }
+}

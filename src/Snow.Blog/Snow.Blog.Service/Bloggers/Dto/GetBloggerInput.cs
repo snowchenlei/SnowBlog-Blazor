@@ -13,5 +13,6 @@ namespace Snow.Blog.Service.Bloggers.Dto
         }
 
         public int? CategoryId { get; set; }
+        public string Title { get; set; }
     }
 }
