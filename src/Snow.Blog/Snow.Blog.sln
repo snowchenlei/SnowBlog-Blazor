@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snow.Blog.SqlServer", "Snow
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snow.Blog.Web", "Snow.Blog.Web.Blazor\Snow.Blog.Web.csproj", "{48CC84EB-3BC9-4E4B-B9C6-DFABBE04151B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snow.Blog.Web.Admin", "Snow.Blog.Web.Admin\Snow.Blog.Web.Admin.csproj", "{EBCA4440-FC42-48C0-BD79-C21276305AA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{48CC84EB-3BC9-4E4B-B9C6-DFABBE04151B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48CC84EB-3BC9-4E4B-B9C6-DFABBE04151B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48CC84EB-3BC9-4E4B-B9C6-DFABBE04151B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

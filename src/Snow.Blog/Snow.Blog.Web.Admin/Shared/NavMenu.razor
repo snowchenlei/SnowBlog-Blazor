@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Components
+@inject NavigationManager navigationManager
+
+<MatNavMenu>
+    <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri">
+        <MatIcon>home</MatIcon> <span class="miniHover">首页</span>
+    </MatNavItem>
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>stars</MatIcon><span class="miniHover">系统管理</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("bloggers").AbsoluteUri">
+                <MatIcon>touch_app</MatIcon> <span class="miniHover">博客管理</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
+                <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
+            </MatNavItem>
+            <MatNavItem Href="@navigationManager.ToAbsoluteUri("screenshots").AbsoluteUri">
+                <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+
+    <MatNavItem Href="https://www.matblazor.com/">Blog</MatNavItem>
+</MatNavMenu>
+
+@code
+        {
+}
