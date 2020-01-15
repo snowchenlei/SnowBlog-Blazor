@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MatDemo.Data;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace Snow.Blog.Web.Admin
 {
@@ -27,6 +29,7 @@ namespace Snow.Blog.Web.Admin
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<HttpClient>();
             services.AddSingleton<WeatherForecastService>();
         }
 

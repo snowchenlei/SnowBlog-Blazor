@@ -8,4 +8,8 @@
     <PackageReference Include="MatBlazor" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Admin\" />
+  </ItemGroup>
+
 </Project>
