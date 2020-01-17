@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Snow.Blog.Common\Snow.Blog.Common.csproj" />
     <ProjectReference Include="..\Snow.Blog.IRepository\Snow.Blog.IRepository.csproj" />
   </ItemGroup>
 

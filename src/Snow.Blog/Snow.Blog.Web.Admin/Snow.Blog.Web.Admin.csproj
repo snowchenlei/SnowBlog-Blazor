@@ -5,11 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="MatBlazor" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Pages\Admin\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Snow.Blog.Service\Snow.Blog.Service.csproj" />
+    <ProjectReference Include="..\Snow.Blog.SqlServer\Snow.Blog.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

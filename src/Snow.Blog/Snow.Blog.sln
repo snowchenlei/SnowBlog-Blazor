@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snow.Blog.Web", "Snow.Blog.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snow.Blog.Web.Admin", "Snow.Blog.Web.Admin\Snow.Blog.Web.Admin.csproj", "{EBCA4440-FC42-48C0-BD79-C21276305AA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snow.Blog.Common", "Snow.Blog.Common\Snow.Blog.Common.csproj", "{629168C0-8559-4BAB-B08C-73C43463459C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBCA4440-FC42-48C0-BD79-C21276305AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{629168C0-8559-4BAB-B08C-73C43463459C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{629168C0-8559-4BAB-B08C-73C43463459C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{629168C0-8559-4BAB-B08C-73C43463459C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{629168C0-8559-4BAB-B08C-73C43463459C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -362,6 +362,28 @@ namespace Snow.Blog.Repository
         /// <summary>
         /// 批量插入 Entity
         /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>受影响的行数</returns>
+        public async Task<long> InsertAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            if (connection == null)
+            {
+                using (connection = DBSessionFactory.CreateDbConnection(ConnectionString))
+                {
+                    return await connection.InsertAsync(entity, transaction, commandTimeout);
+                }
+            }
+            else
+            {
+                return await connection.InsertAsync(entity, transaction, commandTimeout);
+            }
+        }
+
+        /// <summary>
+        /// 批量插入 Entity
+        /// </summary>
         /// <param name="entities">实体集合</param>
         /// <param name="transaction">事物</param>
         /// <param name="commandTimeout">超时时间</param>
@@ -378,6 +400,28 @@ namespace Snow.Blog.Repository
             else
             {
                 return connection.Insert(entities, transaction, commandTimeout);
+            }
+        }
+
+        /// <summary>
+        /// 批量插入 Entity
+        /// </summary>
+        /// <param name="entities">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>受影响的行数</returns>
+        public async Task<long> InsertAsync(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            if (connection == null)
+            {
+                using (connection = DBSessionFactory.CreateDbConnection(ConnectionString))
+                {
+                    return await connection.InsertAsync(entities, transaction, commandTimeout);
+                }
+            }
+            else
+            {
+                return await connection.InsertAsync(entities, transaction, commandTimeout);
             }
         }
 
@@ -406,6 +450,28 @@ namespace Snow.Blog.Repository
         /// <summary>
         /// 批量更新 Entity
         /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        public async Task<bool> UpdateAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            if (connection == null)
+            {
+                using (connection = DBSessionFactory.CreateDbConnection(ConnectionString))
+                {
+                    return await connection.UpdateAsync(entity, transaction, commandTimeout);
+                }
+            }
+            else
+            {
+                return await connection.UpdateAsync(entity, transaction, commandTimeout);
+            }
+        }
+
+        /// <summary>
+        /// 批量更新 Entity
+        /// </summary>
         /// <param name="entities">实体集合</param>
         /// <param name="transaction">事物</param>
         /// <param name="commandTimeout">超时时间</param>
@@ -422,6 +488,28 @@ namespace Snow.Blog.Repository
             else
             {
                 return connection.Update(entities, transaction, commandTimeout);
+            }
+        }
+
+        /// <summary>
+        /// 批量更新 Entity
+        /// </summary>
+        /// <param name="entities">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        public async Task<bool> UpdateAsync(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            if (connection == null)
+            {
+                using (connection = DBSessionFactory.CreateDbConnection(ConnectionString))
+                {
+                    return await connection.UpdateAsync(entities, transaction, commandTimeout);
+                }
+            }
+            else
+            {
+                return await connection.UpdateAsync(entities, transaction, commandTimeout);
             }
         }
 
@@ -450,6 +538,28 @@ namespace Snow.Blog.Repository
         /// <summary>
         /// 批量删除 Entity
         /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        public async Task<bool> DeleteAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            if (connection == null)
+            {
+                using (connection = DBSessionFactory.CreateDbConnection(ConnectionString))
+                {
+                    return await connection.DeleteAsync(entity, transaction, commandTimeout);
+                }
+            }
+            else
+            {
+                return await connection.DeleteAsync(entity, transaction, commandTimeout);
+            }
+        }
+
+        /// <summary>
+        /// 批量删除 Entity
+        /// </summary>
         /// <param name="entity">实体集合</param>
         /// <param name="transaction">事物</param>
         /// <param name="commandTimeout">超时时间</param>
@@ -466,6 +576,28 @@ namespace Snow.Blog.Repository
             else
             {
                 return connection.Delete(entities, transaction, commandTimeout);
+            }
+        }
+
+        /// <summary>
+        /// 批量删除 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        public async Task<bool> DeleteAsync(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null)
+        {
+            if (connection == null)
+            {
+                using (connection = DBSessionFactory.CreateDbConnection(ConnectionString))
+                {
+                    return await connection.DeleteAsync(entities, transaction, commandTimeout);
+                }
+            }
+            else
+            {
+                return await connection.DeleteAsync(entities, transaction, commandTimeout);
             }
         }
 

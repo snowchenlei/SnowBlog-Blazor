@@ -1,61 +1,182 @@
 ﻿@page "/bloggers"
+@using Microsoft.Extensions.Localization
+@using Snow.Blog.Service.Dto;
+@using Snow.Blog.Service.Bloggers;
+@using Snow.Blog.Service.Bloggers.Dto;
+@using Snow.Blog.Service.Enums;
+@using Snow.Blog.Service.Categories;
+@using Snow.Blog.Service.Categories.Dto;
 
+@inject IMatToaster matToaster
 @inject HttpClient Http
+@inject IBloggerService _bloggerService
+@inject ICategoryService _categoryService
+@inject IEnumService _enumService
 
-<MatTable Items="@cars" class="mat-elevation-z5" Striped="true" PageSize="10">
+<MatTable Items="@bloggers" class="mat-elevation-z5" PageParamName="ask就">
     <MatTableHeader>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Horsepower</th>
+        <th><MatButton Icon="add" Label="New Blogger" OnClick="@(() => OpenUpsertBloggerDialog())"></MatButton></th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>CategoryName</th>
     </MatTableHeader>
-    <MatTableRow>
-        <td>@context.Name</td>
-        <td>@String.Format("${0:f2}", @context.Price)</td>
-        <td>@context.Horsepower</td>
+    <MatTableRow Context="BloggerRow">
+        <td>
+            <div style="width:155px;">
+                <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertBloggerDialog(BloggerRow.Title))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(BloggerRow.Title))"></MatIconButton>
+            </div>
+        </td>
+        <td><div style="width:300px;">@BloggerRow.Title</div></td>
+        <td><div style="width: 400px;">@BloggerRow.Description</div></td>
+        <td>@BloggerRow.CategoryName</td>
     </MatTableRow>
 </MatTable>
-@*<table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Horsepower</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var context in cars)
-            {
-                <tr>
-                    <td>@context.Name</td>
-                    <td>@String.Format("${0:f2}", @context.Price)</td>
-                    <td>@context.Horsepower</td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
-@code {
-    public class Car
-    {
-        public string Name { get; set; }
-        public double Price { get; set; }
-        public int Horsepower { get; set; }
+<MatDialog @bind-IsOpen="@isUpsertBloggerDialogOpen">
+    <MatDialogTitle>
+        @labelUpsertDialogTitle
+    </MatDialogTitle>
+    <MatDialogContent>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-Value="@currentBloggerName" Disabled="@isCurrentBloggerReadOnly" Label="Title" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <MatSelect Label="Category"
+                       @bind-Value="categoryId"
+                       TValue="int">
+                <MatOption TValue="int" Value="-1">请选择</MatOption>
+                @foreach (var item in categoriesSelections)
+                {
+                    <MatOption TValue="int" Value="@item.Key">
+                        @item.Value
+                    </MatOption>
+                }
+            </MatSelect>
+        </div>
+        <div class="form-group">
+            <MatSelect Label="SourceType" @bind-Value="sourceType" TValue="int">
+                <MatOption TValue="int" Value="-1">请选择</MatOption>
+                @foreach (var item in sourceTypesSelections)
+                {
+                    <MatOption TValue="int" Value="@item.Key">
+                        @item.Value
+                    </MatOption>
+                }
+            </MatSelect>
+        </div>
+        <div class="form-group">
+            <MatNumericUpDownField Label="Sort"
+                                   @bind-Value=@sort
+                                   FullWidth="true"
+                                   DecimalPlaces=0
+                                   Minimum=0
+                                   Maximum="@int.MaxValue">
+            </MatNumericUpDownField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@currentBloggerName" Label="Description" TextArea="true" FullWidth="true" Dense="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@currentBloggerName" Label="Content" TextArea="true" FullWidth="true" Dense="true"></MatTextField>
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isUpsertBloggerDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@UpsertBlogger">@labelUpsertDialogOkButton</MatButton>
+    </MatDialogActions>
+</MatDialog>
+<MatDialog @bind-IsOpen="@isDeleteBloggerDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete the role "@currentBloggerName" ?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { isDeleteBloggerDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@DeleteBloggerAsync">Delete</MatButton>
+    </MatDialogActions>
+</MatDialog>
+@code
+{
+    private IReadOnlyList<BloggerListDto> bloggers;
+    string currentBloggerName = "";
+    int categoryId, sourceType;
+    int sort = 0;
+    string labelUpsertDialogTitle;
+    string labelUpsertDialogOkButton;
+    bool isUpsertBloggerDialogOpen = false;
+    bool isDeleteBloggerDialogOpen = false;
+    bool isCurrentBloggerReadOnly = false;
 
-        public Car(string name, double price, int horsepower)
+    bool isInsertOperation;
+
+    protected async override Task OnInitializedAsync()
+    {
+        bloggers = (await _bloggerService.GetBloggersPagedAsync(new GetBloggerInput()
         {
-            Name = name;
-            Price = price;
-            Horsepower = horsepower;
+            Page = 1,
+            Limit = 1000
+        })).Items;
+    }
+    #region OpenUpdateDialog
+    Dictionary<int, string> categoriesSelections = new Dictionary<int, string>();
+    Dictionary<int, string> sourceTypesSelections = new Dictionary<int, string>();
+
+    private async Task OpenUpsertBloggerDialog(string roleName = "")
+    {
+        currentBloggerName = roleName;
+
+        isInsertOperation = (roleName == "");
+
+        // Update the UI
+        if (isInsertOperation)
+        {
+            labelUpsertDialogTitle = "Create Blogger";
+            labelUpsertDialogOkButton = "Create Blogger";
         }
+        else
+        {
+            labelUpsertDialogTitle = "Edit Blogger";
+            labelUpsertDialogOkButton = "Update Blogger";
+        }
+        // Retrieve the role
+        isCurrentBloggerReadOnly = (roleName != "");
+
+        // Setup The Categories
+        categoriesSelections = await _categoryService.GetNavSelectList();
+        sourceTypesSelections = await _enumService.GetSortTypeSelectListAsync();
+
+        this.isUpsertBloggerDialogOpen = true;
+
+    }
+    #endregion
+    #region OpenDeleteDialog
+
+    public void OpenDeleteDialog(string roleName)
+    {
+        currentBloggerName = roleName;
+        isDeleteBloggerDialogOpen = true;
+    }
+    public async Task UpsertBlogger()
+    {
+
+    }
+    public async Task DeleteBloggerAsync()
+    {
+        var response = await Http.DeleteAsync("api/Admin/Role/" + currentBloggerName);
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            matToaster.Add("Blogger Delete Failed", MatToastType.Danger);
+            return;
+        }
+
+        matToaster.Add("Blogger Deleted", MatToastType.Success);
+        await OnInitializedAsync();
+        isDeleteBloggerDialogOpen = false;
+        StateHasChanged();
     }
 
-    Car[] cars = new[]
-    {
-                new Car("Volkswagen Golf", 10000, 220),
-                new Car("Volkswagen Passat", 11000, 240),
-                new Car("Volkswagen Polo", 12000, 110),
-                new Car("Ford Focus", 13000, 200),
-                new Car("Ford Fiesta", 14000, 160),
-                new Car("Ford Fusion", 15000, 260),
-                new Car("Ford Mondeo", 16000, 120),
-            };
+    #endregion
+
 }

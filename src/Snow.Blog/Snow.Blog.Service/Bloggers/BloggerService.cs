@@ -62,6 +62,17 @@ namespace Snow.Blog.Service.Bloggers
         }
 
         /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task CreateBlogger(BloggerEditDto input)
+        {
+            Blogger blogger = _mapper.Map<Blogger>(input);
+            await _bloggerRepository.InsertAsync(blogger);
+        }
+
+        /// <summary>
         /// 获取详情
         /// </summary>
         /// <param name="id">主键</param>

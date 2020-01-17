@@ -19,5 +19,12 @@ namespace Snow.Blog.Service.Bloggers
         Task<BloggerDetailDto> GetBloggerDetailAsync(int id);
 
         Task<int> GetCountAsync();
+
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task CreateBlogger(BloggerEditDto input);
     }
 }

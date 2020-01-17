@@ -23,5 +23,121 @@ namespace Snow.Blog.IRepository
 
         Task<(IEnumerable<TEntity> items, int totalCount)> GetPageLoadAsync(Dictionary<string, object> wheres
              , int pageIndex, int pageSize, string[] asc = null, string[] desc = null);
+
+        #region 增删改
+
+        #region Dapper.Contrib
+
+        /// <summary>
+        /// 批量插入 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>受影响的行数</returns>
+        long Insert(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量插入 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>受影响的行数</returns>
+        Task<long> InsertAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量插入 Entity
+        /// </summary>
+        /// <param name="entities">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>受影响的行数</returns>
+        long Insert(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量插入 Entity
+        /// </summary>
+        /// <param name="entities">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>受影响的行数</returns>
+        Task<long> InsertAsync(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量更新 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        bool Update(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量更新 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        Task<bool> UpdateAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量更新 Entity
+        /// </summary>
+        /// <param name="entities">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        bool Update(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量更新 Entity
+        /// </summary>
+        /// <param name="entities">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        Task<bool> UpdateAsync(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量删除 Entity
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        bool Delete(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量删除 Entity
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        Task<bool> DeleteAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量删除 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        bool Delete(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        /// <summary>
+        /// 批量删除 Entity
+        /// </summary>
+        /// <param name="entity">实体集合</param>
+        /// <param name="transaction">事物</param>
+        /// <param name="commandTimeout">超时时间</param>
+        /// <returns>是否成功</returns>
+        Task<bool> DeleteAsync(IEnumerable<TEntity> entities, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+
+        #endregion Dapper.Contrib
+
+        #endregion 增删改
     }
 }

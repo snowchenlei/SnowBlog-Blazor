@@ -18,3 +18,5 @@
 /src/Snow.Blog/Snow.Blog.Web.Blazor/obj
 /src/Snow.Blog/Snow.Blog.Web.Admin/bin/Debug/netcoreapp3.1
 /src/Snow.Blog/Snow.Blog.Web.Admin/obj
+/src/Snow.Blog/Snow.Blog.Common/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.Common/obj
