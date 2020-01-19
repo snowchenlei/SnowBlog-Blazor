@@ -1,5 +1,6 @@
 ﻿@page "/bloggers"
 @using Microsoft.Extensions.Localization
+@using Snow.Blog.Model.Enum;
 @using Snow.Blog.Service.Dto;
 @using Snow.Blog.Service.Bloggers;
 @using Snow.Blog.Service.Bloggers.Dto;
@@ -23,8 +24,8 @@
     <MatTableRow Context="BloggerRow">
         <td>
             <div style="width:155px;">
-                <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertBloggerDialog(BloggerRow.Title))"></MatIconButton>
-                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(BloggerRow.Title))"></MatIconButton>
+                <MatIconButton Icon="edit" OnClick="@(() => OpenUpsertBloggerDialog(BloggerRow.Id))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(BloggerRow.Id, BloggerRow.Title))"></MatIconButton>
             </div>
         </td>
         <td><div style="width:300px;">@BloggerRow.Title</div></td>
@@ -37,14 +38,15 @@
         @labelUpsertDialogTitle
     </MatDialogTitle>
     <MatDialogContent>
+        @*<MatTextField @bind-Value="editDto.Id" Disabled="@isCurrentBloggerReadOnly"></MatTextField>*@
         <fieldset>
             <div class="form-group">
-                <MatTextField @bind-Value="@currentBloggerName" Disabled="@isCurrentBloggerReadOnly" Label="Title" Icon="add" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                <MatTextField @bind-Value="editDto.Title" Label="Title" FullWidth="true" Required="true"></MatTextField>
             </div>
         </fieldset>
         <div class="form-group">
             <MatSelect Label="Category"
-                       @bind-Value="categoryId"
+                       @bind-Value="editDto.CategoryId"
                        TValue="int">
                 <MatOption TValue="int" Value="-1">请选择</MatOption>
                 @foreach (var item in categoriesSelections)
@@ -56,7 +58,7 @@
             </MatSelect>
         </div>
         <div class="form-group">
-            <MatSelect Label="SourceType" @bind-Value="sourceType" TValue="int">
+            <MatSelect Label="SourceType" @bind-Value="editDto.SourceType" TValue="int">
                 <MatOption TValue="int" Value="-1">请选择</MatOption>
                 @foreach (var item in sourceTypesSelections)
                 {
@@ -76,10 +78,10 @@
             </MatNumericUpDownField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-Value="@currentBloggerName" Label="Description" TextArea="true" FullWidth="true" Dense="true"></MatTextField>
+            <MatTextField @bind-Value="editDto.Description" Label="Description" TextArea="true" FullWidth="true" Dense="true"></MatTextField>
         </div>
         <div class="form-group">
-            <MatTextField @bind-Value="@currentBloggerName" Label="Content" TextArea="true" FullWidth="true" Dense="true"></MatTextField>
+            <MatTextField @bind-Value="editDto.HtmlEncoded" Label="Content" TextArea="true" FullWidth="true" Dense="true"></MatTextField>
         </div>
     </MatDialogContent>
     <MatDialogActions>
@@ -100,7 +102,9 @@
 @code
 {
     private IReadOnlyList<BloggerListDto> bloggers;
+    BloggerEditDto editDto = new BloggerEditDto();
     string currentBloggerName = "";
+    int? currentBloggerId = null;
     int categoryId, sourceType;
     int sort = 0;
     string labelUpsertDialogTitle;
@@ -123,11 +127,11 @@
     Dictionary<int, string> categoriesSelections = new Dictionary<int, string>();
     Dictionary<int, string> sourceTypesSelections = new Dictionary<int, string>();
 
-    private async Task OpenUpsertBloggerDialog(string roleName = "")
+    private async Task OpenUpsertBloggerDialog(int? bloggerId = null)
     {
-        currentBloggerName = roleName;
+        currentBloggerId = bloggerId;
 
-        isInsertOperation = (roleName == "");
+        isInsertOperation = !bloggerId.HasValue;// (roleName == "");
 
         // Update the UI
         if (isInsertOperation)
@@ -141,7 +145,7 @@
             labelUpsertDialogOkButton = "Update Blogger";
         }
         // Retrieve the role
-        isCurrentBloggerReadOnly = (roleName != "");
+        isCurrentBloggerReadOnly = !bloggerId.HasValue;//(roleName != "");
 
         // Setup The Categories
         categoriesSelections = await _categoryService.GetNavSelectList();
@@ -153,14 +157,23 @@
     #endregion
     #region OpenDeleteDialog
 
-    public void OpenDeleteDialog(string roleName)
+    public void OpenDeleteDialog(int bloggerId, string bloggerName)
     {
-        currentBloggerName = roleName;
+        currentBloggerId = bloggerId;
+        currentBloggerName = bloggerName;
+
         isDeleteBloggerDialogOpen = true;
     }
     public async Task UpsertBlogger()
     {
+        if (isInsertOperation)
+        {
 
+        }
+        else
+        {
+            //_categoryService.
+        }
     }
     public async Task DeleteBloggerAsync()
     {

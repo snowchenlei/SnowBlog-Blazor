@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Snow.Blog.Common;
+using Snow.Blog.Model.Enum;
 
 namespace Snow.Blog.Service.Enums
 {
@@ -12,9 +13,9 @@ namespace Snow.Blog.Service.Enums
         {
             return await Task.FromResult(new Dictionary<int, string>()
             {
-                [1] = "原创",
-                [2] = "转载",
-                [3] = "翻译"
+                [(int)SourceType.creator] = "原创",
+                [(int)SourceType.reprinted] = "转载",
+                [(int)SourceType.translate] = "翻译"
             });
         }
     }
