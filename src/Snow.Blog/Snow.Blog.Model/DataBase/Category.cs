@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper.Contrib.Extensions;
 
 namespace Snow.Blog.Model.DataBase
 {
     /// <summary>
     /// 分类表
     /// </summary>
+    [Table("Category")]
     public class Category
     {
         /// <summary>
         /// 自增主键
         /// </summary>
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

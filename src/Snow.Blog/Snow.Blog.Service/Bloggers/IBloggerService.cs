@@ -25,6 +25,6 @@ namespace Snow.Blog.Service.Bloggers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task CreateBlogger(BloggerEditDto input);
+        Task<BloggerListDto> CreateBloggerAsync(BloggerEditDto input);
     }
 }

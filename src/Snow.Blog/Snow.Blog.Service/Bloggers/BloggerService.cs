@@ -17,15 +17,18 @@ namespace Snow.Blog.Service.Bloggers
         private readonly IMapper _mapper;
         private readonly IBloggerRepository _bloggerRepository;
         private readonly ILogger<BloggerService> _logger;
+        private readonly ICategoryRepository _categoryRepository;
 
         public BloggerService(
-            IMapper mapper,
-            ILogger<BloggerService> logger,
-        IBloggerRepository bloggerRepository)
+            IMapper mapper
+            ,ILogger<BloggerService> logger
+            ,ICategoryRepository categoryRepository
+        ,IBloggerRepository bloggerRepository)
         {
             this._mapper = mapper;
             this._bloggerRepository = bloggerRepository;
             _logger = logger;
+            this._categoryRepository = categoryRepository;
         }
 
         public async Task<PagedResultDto<BloggerListDto>> GetBloggersPagedAsync(GetBloggerInput input)
@@ -66,10 +69,13 @@ namespace Snow.Blog.Service.Bloggers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task CreateBlogger(BloggerEditDto input)
+        public async Task<BloggerListDto> CreateBloggerAsync(BloggerEditDto input)
         {
             Blogger blogger = _mapper.Map<Blogger>(input);
-            await _bloggerRepository.InsertAsync(blogger);
+            blogger.Category = await _categoryRepository.GetAsync(input.CategoryId)
+                ?? throw new Exception("分类不存在");
+            blogger.Id = await _bloggerRepository.InsertAsync(blogger);
+            return _mapper.Map<BloggerListDto>(blogger);
         }
 
         /// <summary>

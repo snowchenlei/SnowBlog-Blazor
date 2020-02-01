@@ -14,6 +14,10 @@ namespace Snow.Blog.Model.DataBase
     [Table("Blogger")]
     public class Blogger
     {
+        public Blogger()
+        {
+            CreateDate = EditDate = DateTime.Now;
+        }
         /// <summary>
         /// 自增主键
         /// </summary>
@@ -34,11 +38,7 @@ namespace Snow.Blog.Model.DataBase
         /// 分类
         /// </summary>
         public int CategoryId { get; set; }
-
-        /// <summary>
-        /// 标签
-        /// </summary>
-        public List<Tag> Tag { get; set; }
+        
 
         /// <summary>
         /// 纯文本内容
@@ -85,6 +85,12 @@ namespace Snow.Blog.Model.DataBase
         /// </summary>
         public DateTime EditDate { get; set; }
 
+        /// <summary>
+        /// 标签
+        /// </summary>
+        [Computed]
+        public List<Tag> Tag { get; set; }
+        [Computed]
         public Category Category { get; set; }
     }
 }

@@ -38,13 +38,14 @@ namespace Snow.Blog.IRepository
         long Insert(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
 
         /// <summary>
-        /// 批量插入 Entity
+        /// 插入
         /// </summary>
-        /// <param name="entity">实体集合</param>
+        /// <param name="entity">实体</param>
+        /// <param name="connection">数据库连接</param>
         /// <param name="transaction">事物</param>
         /// <param name="commandTimeout">超时时间</param>
-        /// <returns>受影响的行数</returns>
-        Task<long> InsertAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
+        /// <returns>主键</returns>
+        Task<int> InsertAsync(TEntity entity, IDbConnection connection = null, IDbTransaction transaction = null, int? commandTimeout = null);
 
         /// <summary>
         /// 批量插入 Entity

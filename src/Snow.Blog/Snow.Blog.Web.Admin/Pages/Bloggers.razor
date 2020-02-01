@@ -33,7 +33,7 @@
         <td>@BloggerRow.CategoryName</td>
     </MatTableRow>
 </MatTable>
-<MatDialog @bind-IsOpen="@isUpsertBloggerDialogOpen">
+<MatDialog @bind-IsOpen="@UpsertBloggerDialogOpen">
     <MatDialogTitle>
         @labelUpsertDialogTitle
     </MatDialogTitle>
@@ -85,8 +85,8 @@
         </div>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(e => { isUpsertBloggerDialogOpen = false; })">Cancel</MatButton>
-        <MatButton OnClick="@UpsertBlogger">@labelUpsertDialogOkButton</MatButton>
+        <MatButton OnClick="@(e => { UpsertBloggerDialogOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@UpsertBloggerAsync">@labelUpsertDialogOkButton</MatButton>
     </MatDialogActions>
 </MatDialog>
 <MatDialog @bind-IsOpen="@isDeleteBloggerDialogOpen" Style="z-index:100">
@@ -101,16 +101,12 @@
 </MatDialog>
 @code
 {
-    private IReadOnlyList<BloggerListDto> bloggers;
+    private IList<BloggerListDto> bloggers;
     BloggerEditDto editDto = new BloggerEditDto();
     string currentBloggerName = "";
     int? currentBloggerId = null;
     int categoryId, sourceType;
     int sort = 0;
-    string labelUpsertDialogTitle;
-    string labelUpsertDialogOkButton;
-    bool isUpsertBloggerDialogOpen = false;
-    bool isDeleteBloggerDialogOpen = false;
     bool isCurrentBloggerReadOnly = false;
 
     bool isInsertOperation;
@@ -121,12 +117,13 @@
         {
             Page = 1,
             Limit = 1000
-        })).Items;
+        })).Items.ToList();
     }
     #region OpenUpdateDialog
+    string labelUpsertDialogOkButton, labelUpsertDialogTitle;
+    bool UpsertBloggerDialogOpen = false;
     Dictionary<int, string> categoriesSelections = new Dictionary<int, string>();
     Dictionary<int, string> sourceTypesSelections = new Dictionary<int, string>();
-
     private async Task OpenUpsertBloggerDialog(int? bloggerId = null)
     {
         currentBloggerId = bloggerId;
@@ -151,11 +148,12 @@
         categoriesSelections = await _categoryService.GetNavSelectList();
         sourceTypesSelections = await _enumService.GetSortTypeSelectListAsync();
 
-        this.isUpsertBloggerDialogOpen = true;
+        this.UpsertBloggerDialogOpen = true;
 
     }
     #endregion
     #region OpenDeleteDialog
+    bool isDeleteBloggerDialogOpen = false;
 
     public void OpenDeleteDialog(int bloggerId, string bloggerName)
     {
@@ -164,32 +162,53 @@
 
         isDeleteBloggerDialogOpen = true;
     }
-    public async Task UpsertBlogger()
-    {
-        if (isInsertOperation)
-        {
+    #endregion
 
-        }
-        else
+    #region UpsertBlogger
+    public async Task UpsertBloggerAsync()
+    {
+        try
         {
-            //_categoryService.
+            if (isInsertOperation)
+            {
+                BloggerListDto result = await _bloggerService.CreateBloggerAsync(editDto);
+                bloggers.Add(result);
+                matToaster.Add("User Created",MatToastType.Success);
+            }
+            else
+            {
+                //_categoryService.
+            }
+            UpsertBloggerDialogOpen = false;
+        }
+        catch(Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "User Upsert Failed");
         }
     }
+    #endregion
+    #region DeleteBlogger
     public async Task DeleteBloggerAsync()
     {
-        var response = await Http.DeleteAsync("api/Admin/Role/" + currentBloggerName);
-        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        try
         {
-            matToaster.Add("Blogger Delete Failed", MatToastType.Danger);
-            return;
+            var response = await Http.DeleteAsync("api/Admin/Role/" + currentBloggerName);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                matToaster.Add("Blogger Delete Failed", MatToastType.Danger);
+                return;
+            }
+
+            matToaster.Add("Blogger Deleted", MatToastType.Success);
+            await OnInitializedAsync();
+            isDeleteBloggerDialogOpen = false;
+            StateHasChanged();
         }
-
-        matToaster.Add("Blogger Deleted", MatToastType.Success);
-        await OnInitializedAsync();
-        isDeleteBloggerDialogOpen = false;
-        StateHasChanged();
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "User Delete Failed");
+        }
     }
-
     #endregion
 
 }
