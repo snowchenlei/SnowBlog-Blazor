@@ -109,7 +109,7 @@
     int sort = 0;
     bool isCurrentBloggerReadOnly = false;
 
-    bool isInsertOperation;
+    bool InsertOperation;
 
     protected async override Task OnInitializedAsync()
     {
@@ -128,18 +128,20 @@
     {
         currentBloggerId = bloggerId;
 
-        isInsertOperation = !bloggerId.HasValue;// (roleName == "");
+        InsertOperation = !bloggerId.HasValue;// (roleName == "");
 
         // Update the UI
-        if (isInsertOperation)
+        if (InsertOperation)
         {
             labelUpsertDialogTitle = "Create Blogger";
             labelUpsertDialogOkButton = "Create Blogger";
+            editDto = new BloggerEditDto();
         }
         else
         {
             labelUpsertDialogTitle = "Edit Blogger";
             labelUpsertDialogOkButton = "Update Blogger";
+            editDto = await _bloggerService.GetBloggerForEditAsync(bloggerId.Value);
         }
         // Retrieve the role
         isCurrentBloggerReadOnly = !bloggerId.HasValue;//(roleName != "");
@@ -169,19 +171,22 @@
     {
         try
         {
-            if (isInsertOperation)
+            if (InsertOperation)
             {
                 BloggerListDto result = await _bloggerService.CreateBloggerAsync(editDto);
                 bloggers.Add(result);
-                matToaster.Add("User Created",MatToastType.Success);
+                matToaster.Add("User Created", MatToastType.Success);
             }
             else
             {
-                //_categoryService.
+                BloggerListDto result = await _bloggerService.UpdateBloggerAsync(editDto);
+                int editIndex = bloggers.IndexOf(bloggers.FirstOrDefault(b => b.Id == editDto.Id));
+                bloggers[editIndex] = result;
+                matToaster.Add("User Updated", MatToastType.Success);
             }
             UpsertBloggerDialogOpen = false;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             matToaster.Add(ex.Message, MatToastType.Danger, "User Upsert Failed");
         }

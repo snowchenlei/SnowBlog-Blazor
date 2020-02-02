@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Snow.Blog.Common.Exceptions;
 using Snow.Blog.IDAL.Categories;
 using Snow.Blog.IRepository.Bloggers;
 using Snow.Blog.Model.DataBase;
@@ -63,19 +64,16 @@ namespace Snow.Blog.Service.Bloggers
             var result = await _bloggerRepository.GetPageLoadAsync(wheres, input.Page, input.Limit, asc, desc);
             return new PagedResultDto<BloggerListDto>(input.Page, input.Limit, result.totalCount, _mapper.Map<List<BloggerListDto>>(result.items));
         }
-
+        
         /// <summary>
-        /// 新增
+        /// 获取修改数据
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="id">主键</param>
         /// <returns></returns>
-        public async Task<BloggerListDto> CreateBloggerAsync(BloggerEditDto input)
+        public async Task<BloggerEditDto> GetBloggerForEditAsync(int id)
         {
-            Blogger blogger = _mapper.Map<Blogger>(input);
-            blogger.Category = await _categoryRepository.GetAsync(input.CategoryId)
-                ?? throw new Exception("分类不存在");
-            blogger.Id = await _bloggerRepository.InsertAsync(blogger);
-            return _mapper.Map<BloggerListDto>(blogger);
+            Blogger blogger = await _bloggerRepository.GetDetailAsync(id);
+            return _mapper.Map<BloggerEditDto>(blogger);
         }
 
         /// <summary>
@@ -89,6 +87,40 @@ namespace Snow.Blog.Service.Bloggers
             return _mapper.Map<BloggerDetailDto>(blogger);
         }
 
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<BloggerListDto> CreateBloggerAsync(BloggerEditDto input)
+        {
+            Blogger blogger = _mapper.Map<Blogger>(input);
+            blogger.Category = await _categoryRepository.GetAsync(input.CategoryId)
+                ?? throw new UserFriendlyException("分类不存在");
+            blogger.Id = await _bloggerRepository.InsertAsync(blogger);
+            return _mapper.Map<BloggerListDto>(blogger);
+        }
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<BloggerListDto> UpdateBloggerAsync(BloggerEditDto input)
+        {
+            if (!input.Id.HasValue)
+            {
+                throw new UserFriendlyException("请确认数据完整性");
+            }
+            Blogger oldBlogger = await _bloggerRepository.GetAsync(input.Id.Value);
+            _mapper.Map(input, oldBlogger);
+            if(!await _bloggerRepository.UpdateAsync(oldBlogger))
+            {
+                throw new UserFriendlyException("修改失败");
+            }
+            return _mapper.Map<BloggerListDto>(oldBlogger);
+        }
+        
         /// <summary>
         /// 获取数据总数
         /// </summary>

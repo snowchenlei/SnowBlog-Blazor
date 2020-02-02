@@ -18,6 +18,13 @@ namespace Snow.Blog.Service.Bloggers
         /// <returns></returns>
         Task<BloggerDetailDto> GetBloggerDetailAsync(int id);
 
+        /// <summary>
+        /// 获取修改数据
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <returns></returns>
+        Task<BloggerEditDto> GetBloggerForEditAsync(int id);
+
         Task<int> GetCountAsync();
 
         /// <summary>
@@ -26,5 +33,12 @@ namespace Snow.Blog.Service.Bloggers
         /// <param name="input"></param>
         /// <returns></returns>
         Task<BloggerListDto> CreateBloggerAsync(BloggerEditDto input);
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<BloggerListDto> UpdateBloggerAsync(BloggerEditDto input);
     }
 }
