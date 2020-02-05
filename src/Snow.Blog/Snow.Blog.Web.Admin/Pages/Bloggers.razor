@@ -1,6 +1,8 @@
 ﻿@page "/bloggers"
 @using Microsoft.Extensions.Localization
 @using Snow.Blog.Model.Enum;
+@using Snow.Blog.Common.Exceptions;
+@using Snow.Blog.Web.Admin.Middleware.Wrappers;
 @using Snow.Blog.Service.Dto;
 @using Snow.Blog.Service.Bloggers;
 @using Snow.Blog.Service.Bloggers.Dto;
@@ -103,6 +105,7 @@
 {
     private IList<BloggerListDto> bloggers;
     BloggerEditDto editDto = new BloggerEditDto();
+    BloggerListDto listDto;
     string currentBloggerName = "";
     int? currentBloggerId = null;
     int categoryId, sourceType;
@@ -110,15 +113,21 @@
     bool isCurrentBloggerReadOnly = false;
 
     bool InsertOperation;
-
+    string requestUri = "http://localhost:13822/";
     protected async override Task OnInitializedAsync()
     {
-        bloggers = (await _bloggerService.GetBloggersPagedAsync(new GetBloggerInput()
+        string queryString = "?page=1&limit=10";
+        try
         {
-            Page = 1,
-            Limit = 1000
-        })).Items.ToList();
+            PagedResultDto<BloggerListDto> result = await Http.GetJsonAsync<PagedResultDto<BloggerListDto>>($"{requestUri}api/bloggers{queryString}");
+            bloggers = result.Items.ToList();
+        }
+        catch(HttpRequestException he)
+        {
+            matToaster.Add(he.Message, MatToastType.Danger, "User Get Failed");
+        }
     }
+
     #region OpenUpdateDialog
     string labelUpsertDialogOkButton, labelUpsertDialogTitle;
     bool UpsertBloggerDialogOpen = false;
@@ -141,7 +150,9 @@
         {
             labelUpsertDialogTitle = "Edit Blogger";
             labelUpsertDialogOkButton = "Update Blogger";
-            editDto = await _bloggerService.GetBloggerForEditAsync(bloggerId.Value);
+
+            editDto = await Http.GetJsonAsync<BloggerEditDto>($"{requestUri}api/bloggers/{bloggerId.Value}");
+            //editDto = await _bloggerService.GetBloggerForEditAsync(bloggerId.Value);
         }
         // Retrieve the role
         isCurrentBloggerReadOnly = !bloggerId.HasValue;//(roleName != "");
@@ -154,6 +165,7 @@
 
     }
     #endregion
+
     #region OpenDeleteDialog
     bool isDeleteBloggerDialogOpen = false;
 
@@ -161,7 +173,7 @@
     {
         currentBloggerId = bloggerId;
         currentBloggerName = bloggerName;
-
+        listDto = bloggers.FirstOrDefault(b => b.Id == bloggerId);
         isDeleteBloggerDialogOpen = true;
     }
     #endregion
@@ -173,13 +185,13 @@
         {
             if (InsertOperation)
             {
-                BloggerListDto result = await _bloggerService.CreateBloggerAsync(editDto);
+                BloggerListDto result = await Http.PostJsonAsync<BloggerListDto>($"{requestUri}api/bloggers", editDto);
                 bloggers.Add(result);
                 matToaster.Add("User Created", MatToastType.Success);
             }
             else
             {
-                BloggerListDto result = await _bloggerService.UpdateBloggerAsync(editDto);
+                BloggerListDto result = await Http.PutJsonAsync<BloggerListDto>($"{requestUri}api/bloggers/{editDto.Id}", editDto);
                 int editIndex = bloggers.IndexOf(bloggers.FirstOrDefault(b => b.Id == editDto.Id));
                 bloggers[editIndex] = result;
                 matToaster.Add("User Updated", MatToastType.Success);
@@ -192,21 +204,24 @@
         }
     }
     #endregion
+
     #region DeleteBlogger
     public async Task DeleteBloggerAsync()
     {
         try
         {
-            var response = await Http.DeleteAsync("api/Admin/Role/" + currentBloggerName);
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            HttpResponseMessage response = await Http.DeleteAsync($"{requestUri}api/bloggers/{listDto.Id}");
+            isDeleteBloggerDialogOpen = false;
+            if (response.StatusCode != System.Net.HttpStatusCode.OK
+                && response.StatusCode != System.Net.HttpStatusCode.NoContent)
             {
                 matToaster.Add("Blogger Delete Failed", MatToastType.Danger);
                 return;
             }
 
+            bloggers.Remove(listDto);
             matToaster.Add("Blogger Deleted", MatToastType.Success);
-            await OnInitializedAsync();
-            isDeleteBloggerDialogOpen = false;
+            // await OnInitializedAsync();
             StateHasChanged();
         }
         catch (Exception ex)
@@ -215,5 +230,4 @@
         }
     }
     #endregion
-
 }

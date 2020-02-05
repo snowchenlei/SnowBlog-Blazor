@@ -8,6 +8,8 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="MatBlazor" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Snow.Blog.Service\Snow.Blog.Service.csproj" />
     <ProjectReference Include="..\Snow.Blog.SqlServer\Snow.Blog.SqlServer.csproj" />
+    <ProjectReference Include="..\Snow.Blog.Web.Core\Snow.Blog.Web.Core.csproj" />
   </ItemGroup>
 
 </Project>

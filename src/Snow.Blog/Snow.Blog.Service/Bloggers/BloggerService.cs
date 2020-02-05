@@ -34,7 +34,6 @@ namespace Snow.Blog.Service.Bloggers
 
         public async Task<PagedResultDto<BloggerListDto>> GetBloggersPagedAsync(GetBloggerInput input)
         {
-            _logger.LogDebug("分页进来了");
             string[] asc = null, desc = null;
             Dictionary<string, object> wheres = new Dictionary<string, object>();
             if (input.CategoryId.HasValue)
@@ -86,6 +85,15 @@ namespace Snow.Blog.Service.Bloggers
             Blogger blogger = await _bloggerRepository.GetDetailAsync(id);
             return _mapper.Map<BloggerDetailDto>(blogger);
         }
+        
+        /// <summary>
+        /// 获取数据总数
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetCountAsync()
+        {
+            return await _bloggerRepository.GetCountAsync();
+        }
 
         /// <summary>
         /// 新增
@@ -120,14 +128,20 @@ namespace Snow.Blog.Service.Bloggers
             }
             return _mapper.Map<BloggerListDto>(oldBlogger);
         }
-        
+
         /// <summary>
-        /// 获取数据总数
+        /// 删除
         /// </summary>
+        /// <param name="id">主键</param>
         /// <returns></returns>
-        public async Task<int> GetCountAsync()
+        public async Task DeleteBloggerAsync(int id)
         {
-            return await _bloggerRepository.GetCountAsync();
+            Blogger blogger = await _bloggerRepository.GetAsync(id)
+                ?? throw new UserFriendlyException("博客不存在");
+            if(!(await _bloggerRepository.DeleteAsync(blogger)))
+            {
+                throw new UserFriendlyException("删除失败");
+            }
         }
     }
 }

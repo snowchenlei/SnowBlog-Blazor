@@ -20,3 +20,5 @@
 /src/Snow.Blog/Snow.Blog.Web.Admin/obj
 /src/Snow.Blog/Snow.Blog.Common/bin/Debug/netcoreapp3.1
 /src/Snow.Blog/Snow.Blog.Common/obj
+/src/Snow.Blog/Snow.Blog.Web.Core/bin/Debug/netcoreapp3.1
+/src/Snow.Blog/Snow.Blog.Web.Core/obj

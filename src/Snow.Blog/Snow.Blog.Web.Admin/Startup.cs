@@ -21,6 +21,9 @@ using System.Runtime.Loader;
 using AutoMapper;
 using MatBlazor;
 using Snow.Blog.Service.Enums;
+using Snow.Blog.Web.Admin.Middleware;
+using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace Snow.Blog.Web.Admin
 {
@@ -48,6 +51,10 @@ namespace Snow.Blog.Web.Admin
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddScoped<HttpClient>();
             services.AddSingleton<WeatherForecastService>();
+    //        services.AddLogging(builder => builder
+    //    .AddBrowserConsole() // Add Blazor.Extensions.Logging.BrowserConsoleLogger
+    //    .SetMinimumLevel(LogLevel.Trace)
+    //);
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;
@@ -57,6 +64,20 @@ namespace Snow.Blog.Web.Admin
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
+            var webCore = Assembly.Load(new AssemblyName("Snow.Blog.Web.Core")); //类库的程序集名称
+
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.DateFormatString = "yyyy/MM/dd HH:mm:ss";
+                })
+                .AddApplicationPart(webCore);
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
@@ -65,14 +86,17 @@ namespace Snow.Blog.Web.Admin
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
+            app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
+
+            app.UseCustomerExceptionHandler();
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Error");
+            //}
 
             app.UseStaticFiles();
 
@@ -80,6 +104,9 @@ namespace Snow.Blog.Web.Admin
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
+
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

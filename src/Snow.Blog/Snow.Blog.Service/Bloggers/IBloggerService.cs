@@ -40,5 +40,12 @@ namespace Snow.Blog.Service.Bloggers
         /// <param name="input"></param>
         /// <returns></returns>
         Task<BloggerListDto> UpdateBloggerAsync(BloggerEditDto input);
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <returns></returns>
+        Task DeleteBloggerAsync(int id);
     }
 }
